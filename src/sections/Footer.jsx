@@ -1,6 +1,9 @@
+import { useMemo } from "react";
 import { mySocials } from "../constants";
 
 const Footer = () => {
+    const currentYear = useMemo(() => new Date().getFullYear(), []);
+
     return (
         <section className="flex flex-wrap items-center justify-between gap-5 pb-3 text-neutral-400 c-space">
             <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent h-[1px] w-full" />
@@ -16,7 +19,7 @@ const Footer = () => {
                     </a>
                 ))}
             </div>
-            <p>c 2025 Olympus. All rights reserved.</p>
+            <p>© {currentYear} Olympus. All rights reserved.</p>
         </section>
     )
 };

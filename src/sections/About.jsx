@@ -6,6 +6,7 @@ import { Frameworks } from "../components/Frameworks";
 
 const About = () => {
     const grid2Container = useRef(null);
+    
     return (
         <section className="c-space section-spacing">
             <h2 className="text-heading">About me</h2>
