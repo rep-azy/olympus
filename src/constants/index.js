@@ -1,60 +1,25 @@
 export const myProjects = [
   {
     id: 1,
-    title: "E-commerce Platform",
+    title: "Mayday",
     description:
-      "Facilitates purchases from international websites like Amazon and eBay, allowing customers to shop from these sites and have products delivered domestically.",
+      "An emergency reporting system for Indang, Cavite, enabling community reporting and streamlined management for responders and administrators via mobile and web platforms.",
     subDescription: [
-      "Built a scalable application with ASP.NET Core MVC, integrating global platforms like Amazon for domestic delivery.",
-      "Implemented secure authentication and database management using ASP.NET Core Identity and Entity Framework Core.",
-      "Designed a responsive frontend with Tailwind CSS, enhancing user experience.",
-      "Added payment systems, localization, and product filtering for functionality improvements.",
+      "Built with React Native (mobile) and React (web dashboard).",
+      "Used Firebase for authentication, Firestore database, and cloud storage.",
+      "Implemented role-based access for community, responder, and admin workflows.",
+      "Developed the admin dashboard with Material UI and DataGrid.",
+      "Added mobile features for reports, photo evidence, geolocation, and responder tracking.",
+      "Applied TailwindCSS and custom styling for a modern, responsive UI.",
     ],
     href: "",
-    logo: "",
-    image: "/assets/projects/accessories.jpg",
+    logo: "/assets/logos/mayday.png",
+    image: "/assets/projects/mayday-web.png",
     tags: [
       {
         id: 1,
-        name: "C#",
-        path: "/assets/logos/csharp.svg",
-      },
-      {
-        id: 2,
-        name: ".Net",
-        path: "/assets/logos/dotnet.svg",
-      },
-      {
-        id: 3,
-        name: "Ef Core",
-        path: "/assets/logos/efcore.png",
-      },
-      {
-        id: 4,
-        name: "TailwindCSS",
-        path: "/assets/logos/tailwindcss.svg",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Authentication & Authorization System",
-    description:
-      "A secure authentication and authorization system using Auth0 for seamless user management.",
-    subDescription: [
-      "Integrated Auth0 for authentication, supporting OAuth, JWT, and multi-factor authentication.",
-      "Implemented role-based access control (RBAC) for fine-grained user permissions.",
-      "Developed a React-based frontend with Tailwind CSS for a sleek user experience.",
-      "Connected to a secure SQLite database for user data storage.",
-    ],
-    href: "",
-    logo: "",
-    image: "/assets/projects/auth-system.jpg",
-    tags: [
-      {
-        id: 1,
-        name: "Auth0",
-        path: "/assets/logos/auth0.svg",
+        name: "React Native",
+        path: "/assets/logos/reactnative.svg",
       },
       {
         id: 2,
@@ -63,17 +28,60 @@ export const myProjects = [
       },
       {
         id: 3,
-        name: "SQLite",
-        path: "/assets/logos/sqlite.svg",
+        name: "Firebase",
+        path: "/assets/logos/firebase.svg",
       },
       {
         id: 4,
         name: "TailwindCSS",
         path: "/assets/logos/tailwindcss.svg",
       },
+      {
+        id: 5,
+        name: "Material UI",
+        path: "/assets/logos/mui.svg",
+      },
     ],
   },
   {
+    id: 2,
+    title: "GEOMAP: An Android-based Geographic Emergency Reporting System",
+    description:
+      "A mobile-first emergency reporting system designed to connect community users with responders, integrating real-time geolocation, tracking, and optimized routing.",
+    subDescription: [
+      "Developed with React Native for cross-platform mobile deployment.",
+      "Utilized Firebase Realtime Database for secure, real-time data management.",
+      "Integrated Google Maps API for GPS, mapping, and geolocation features.",
+      "Implemented Dijkstra’s and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
+      "Covered four core modules: user management, geolocation, tracking, and reporting."
+    ],
+    href: "",
+    logo: "",
+    image: "/assets/projects/geomap-web-reports.png",
+    tags: [
+      {
+        id: 1,
+        name: "React Native",
+        path: "/assets/logos/reactnative.svg",
+      },
+      {
+        id: 2,
+        name: "Firebase",
+        path: "/assets/logos/firebase.svg",
+      },
+      {
+        id: 3,
+        name: "Google Maps",
+        path: "/assets/logos/googlemaps.png",
+      },
+      {
+        id: 4,
+        name: "Pathfinding",
+        path: "/assets/logos/algorithm.png",
+      },
+    ],
+  }
+  /* {
     id: 3,
     title: "Blazor Web App",
     description:
@@ -220,24 +228,24 @@ export const myProjects = [
         path: "/assets/logos/tailwindcss.svg",
       },
     ],
-  },
+  }, */
 ];
 
 export const mySocials = [
   {
-    name: "WhatsApp",
-    href: "",
-    icon: "/assets/socials/whatsApp.svg",
+    name: "Github",
+    href: "https://github.com/rep-azy",
+    icon: "/assets/socials/github.svg",
   },
   {
     name: "Linkedin",
-    href: "https://www.linkedin.com/in/ali-sanati/",
+    href: "https://www.linkedin.com/in/azy-sumanting",
     icon: "/assets/socials/linkedIn.svg",
   },
   {
-    name: "Instagram",
-    href: "https://www.instagram.com/ali.sanatidev/reels/",
-    icon: "/assets/socials/instagram.svg",
+    name: "Jobstreet",
+    href: "https://ph.jobstreet.com/profile/azel-sumanting-W9H3p0fRmR",
+    icon: "/assets/socials/jobstreet.svg",
   },
 ];
 
@@ -261,9 +269,9 @@ export const experiences = [
     contents: [
       "Engineered systems for large-scale data ingestion and analysis, ensuring efficient data processing and storage.",
       "Developed back-end systems enabling vehicle-to-cloud communication for telemetry, diagnostics, and remote control:",
-      "✅ Implemented secure APIs, following ISO 26262 automotive safety standards.",
-      "✅ Ensured data privacy for customers and partners through industry-compliant protocols.",
-      "✅ Delivered remote features like over-the-air updates, real-time tracking, and remote start capabilities.",
+      "Implemented secure APIs, following ISO 26262 automotive safety standards.",
+      "Ensured data privacy for customers and partners through industry-compliant protocols.",
+      "Delivered remote features like over-the-air updates, real-time tracking, and remote start capabilities.",
     ],
   },
   {
@@ -276,6 +284,7 @@ export const experiences = [
     ],
   },
 ];
+
 export const reviews = [
   {
     name: "Jack",

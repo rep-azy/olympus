@@ -76,7 +76,7 @@ const Contact = () => {
                         Let's Talk
                     </h2>
                     <p className="font-normal text-neutral-400">
-                        Whether you're lookingg to build a new website, improve your existing platform, or bring a unique project to life, I'm here to help.
+                        Whether you're looking to build a new website, improve your existing platform, or bring a unique project to life, I'm here to help.
                     </p>
                 </div>
                 <form className="w-full" onSubmit={handleSubmit}>
