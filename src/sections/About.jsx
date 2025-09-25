@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Card from "../components/Card";
 import { Globe } from "../components/Globe";
 import CopyEmailButton from "../components/CopyEmailButton";
@@ -6,6 +6,37 @@ import { Frameworks } from "../components/Frameworks";
 
 const About = () => {
     const grid2Container = useRef(null);
+    const [greeting, setGreeting] = useState('Hello');
+
+    useEffect(() => {
+        const getGreeting = () => {
+            const hour = new Date().getHours();
+            const greetings = {
+                morning: ['Good Morning!', 'Rise and shine!', 'Morning Grind!', 'Top of the morning!'],
+                afternoon: ['Good Afternoon!', 'Hello,', 'Hey there!', 'What\'s up?'],
+                evening: ['Good Evening!', 'Evening,', 'Hey,', 'How was your day?'],
+                night: ["How's it going?", 'Hello! Night Owl!', 'Working Late Huh? Hi,']
+            };
+            
+            if (hour >= 5 && hour < 12) {
+                return greetings.morning[Math.floor(Math.random() * greetings.morning.length)];
+            } else if (hour >= 12 && hour < 17) {
+                return greetings.afternoon[Math.floor(Math.random() * greetings.afternoon.length)];
+            } else if (hour >= 17 && hour < 21) {
+                return greetings.evening[Math.floor(Math.random() * greetings.evening.length)];
+            } else {
+                return greetings.night[Math.floor(Math.random() * greetings.night.length)];
+            }
+        };
+
+        setGreeting(getGreeting());
+        
+        const interval = setInterval(() => {
+            setGreeting(getGreeting());
+        }, 120000);
+
+        return () => clearInterval(interval);
+    }, []);
     
     return (
         <section className="c-space section-spacing">
@@ -15,8 +46,11 @@ const About = () => {
                 <div className="flex items-end grid-default-color grid-1">
                     <img src="assets/coding-pov.png" alt="About me" className="absolute scale-[1.75] -right-[5rem] -top-[1rem] md:scale-[3] md:left-50 md:inset-y-10 lg:scale-[2.5]" />
                     <div className="z-10">
-                        <p className="headtext">Hi, I'm Azel Sumanting</p>
-                        <p className="subtext">Over the past few years, I developed my frontend and backend dev skills to deliver dynamic and responsive software and web applications.</p>
+                        <p className="headtext">{greeting} I'm Azel Sumanting</p>
+                        <p className="subtext">
+                            In need of assistance? Don't hesitate to reach out! I am always open to discussing new projects, whether its in mobile or web development.
+                            Let's collaborate to bring your ideas to life!
+                        </p>
                     </div>
                     <div className="absolute inset-x-0 pointer-events-none -bottom-4 h-1/2 sm:h-1/3 bg-gradient-to-t from-indigo" />
                 </div>
@@ -41,7 +75,7 @@ const About = () => {
                 <div className="grid-black-color grid-3">
                     <div className="z-10 w-[50%]">
                         <p className="headtext">Time Zone</p>
-                        <p className="subtext">I'm based in Mars, and open to remote work worldwide</p>
+                        <p className="subtext">I'm based in Philippines, and open to remote work.</p>
                     </div>
                     <figure className="absolute left-[30%] top-[10%]">
                         <Globe />

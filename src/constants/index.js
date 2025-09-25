@@ -52,7 +52,7 @@ export const myProjects = [
       "Developed with React Native for cross-platform mobile deployment.",
       "Utilized Firebase Realtime Database for secure, real-time data management.",
       "Integrated Google Maps API for GPS, mapping, and geolocation features.",
-      "Implemented Dijkstra’s and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
+      "Implemented Dijkstra's and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
       "Covered four core modules: user management, geolocation, tracking, and reporting."
     ],
     href: "",
@@ -256,7 +256,7 @@ export const mySocials = [
 
 export const experiences = [
   {
-    title: "Front-end Unit Intern",
+    title: "Front-End Unit Intern",
     job: "Web Solutions & Consultancy",
     date: "Aug - Sep 2023",
     contents: [
@@ -268,7 +268,7 @@ export const experiences = [
   },
   {
     title: "Software Developer Student",
-    job: "Mayday: Emergency Reporting System Project",
+    job: "Emergency Reporting System Project",
     date: "Jan 2025 - Present",
     contents: [
       "Developed a cross-platform emergency reporting system, consisting of a mobile application for the community and a web dashboard for administrators.",
@@ -284,8 +284,8 @@ export const experiences = [
     job: "Self-Employed",
     date: "May 2025 - Present",
     contents: [
-      "Created a personal portfolio using Three.js, React, Vite, and WebAPI to showcase technical expertise.",
-      "Continuously enhancing technical skills and expanding expertise in modern web development and back-end technologies.",
+      "Created a personal portfolio using React, Vite, Three.js, and WebAPI to showcase technical expertise.",
+      "Continuously enhancing technical skills and expanding expertise in modern web development and Back-End technologies.",
     ],
   },
 ];
