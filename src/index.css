@@ -119,7 +119,7 @@ body {
 }
 
 .grid-default-color {
-  @apply p-6 bg-gradient-to-b from-storm to-indigo rounded-2xl;
+  @apply bg-gradient-to-b from-storm to-indigo rounded-2xl;
 }
 
 .grid-special-color {
