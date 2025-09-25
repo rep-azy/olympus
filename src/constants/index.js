@@ -238,6 +238,11 @@ export const mySocials = [
     icon: "/assets/socials/github.svg",
   },
   {
+    name: "Facebook",
+    href: "https://www.facebook.com/azysumanting",
+    icon: "/assets/socials/facebook.svg",
+  },
+  {
     name: "Linkedin",
     href: "https://www.linkedin.com/in/azy-sumanting",
     icon: "/assets/socials/linkedIn.svg",
@@ -251,33 +256,33 @@ export const mySocials = [
 
 export const experiences = [
   {
-    title: "Software Developer",
-    job: "Security & Defense Projects",
-    date: "2021-2023",
+    title: "Front-end Unit Intern",
+    job: "Web Solutions & Consultancy",
+    date: "Aug - Sep 2023",
     contents: [
-      "Enhanced application security and developed new features, adhering to standards set by the Passive Defense Organization and National Cyberspace Center.",
-      "Designed and implemented intuitive map interfaces using MapsUI, enhancing user experience and enabling seamless interactive map integration.",
-      "Developed applications for industrial automation, leveraging C++ and the Fatek API for PLC communication.",
-      "Enhanced responsiveness and usability of applications using Windows Forms and WPF frameworks.",
-      "Executed XML to SVG conversions using X-DOM, ensuring dynamic and efficient data visualization.",
+      "Utilized VueJS, Axios, GitLab, and Quasar Framework to develop new features and pages, following company coding standards.",
+      "Implemented a QR code plugin, drop-down options, dialog filters, modals, and tables with CRUD functionalities.",
+      "Guided and evaluated new trainees by assisting with onboarding tasks and reviewing their work.",
+      "Collaborated with a team of developers to complete tasks, configure the project environment, and ensure smooth teamwork.",
     ],
   },
   {
-    title: "Back-End Developer",
-    job: "Car Manufacture",
-    date: "2023-2024",
+    title: "Software Developer Student",
+    job: "Mayday: Emergency Reporting System Project",
+    date: "Jan 2025 - Present",
     contents: [
-      "Engineered systems for large-scale data ingestion and analysis, ensuring efficient data processing and storage.",
-      "Developed back-end systems enabling vehicle-to-cloud communication for telemetry, diagnostics, and remote control:",
-      "Implemented secure APIs, following ISO 26262 automotive safety standards.",
-      "Ensured data privacy for customers and partners through industry-compliant protocols.",
-      "Delivered remote features like over-the-air updates, real-time tracking, and remote start capabilities.",
+      "Developed a cross-platform emergency reporting system, consisting of a mobile application for the community and a web dashboard for administrators.",
+      "Built the mobile application using React Native and JavaScript, integrating Google Maps API for geolocation, Firebase for authentication and database management, and Cloudinary API for secure photo evidence storage.",
+      "Created the administrator dashboard with ReactJS, Leaflet, MUI, and TailwindCSS, using Firebase and Vercel for hosting, authentication, and database operations.",
+      "Implemented data encryption with Crypto to ensure secure storage and handling of sensitive information.",
+      "Collaborated with PNP administrators through presentations and live demonstrations, incorporating their feedback into system features and interface design.",
+      "Conducted training sessions for personnel, demonstrating system functionalities such as report, user, station management, performance summary, and overall platform operations.",
     ],
   },
   {
     title: "Freelance Developer",
     job: "Self-Employed",
-    date: "2025-Present",
+    date: "May 2025 - Present",
     contents: [
       "Created a personal portfolio using Three.js, React, Vite, and WebAPI to showcase technical expertise.",
       "Continuously enhancing technical skills and expanding expertise in modern web development and back-end technologies.",
