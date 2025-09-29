@@ -29,14 +29,8 @@ const About = () => {
                 return greetings.night[Math.floor(Math.random() * greetings.night.length)];
             }
         };
-
-        setGreeting(getGreeting());
         
-        const interval = setInterval(() => {
-            setGreeting(getGreeting());
-        }, 120000);
-
-        return () => clearInterval(interval);
+        setGreeting(getGreeting());
     }, []);
     
     return (

@@ -26,7 +26,7 @@ const Obstacle = ({ position, height }) => {
             style={{ 
                 left: `${position}px`,
                 bottom: '16px', // Same level as ground
-                width: '30px',
+                width: '32px',
                 height: `${height}px`,
             }}
         />
@@ -35,17 +35,25 @@ const Obstacle = ({ position, height }) => {
 
 // Game constants
 const GRAVITY = 1; // Gravity strength for falling
-const JUMP_VELOCITY = -20; // Initial upward velocity when jumping
-const OBSTACLE_SPEED = 3; // Base speed - increase this to make obstacles faster
+const VELOCITY = -20; // Initial upward velocity when jumping
+const SPEED = 3; // Base speed - increase this to make obstacles faster
 const GROUND_Y = 16; // Ground level
 
 const JumpGame = () => {
+    // State Variables
     const [scrollOffset, setScrollOffset] = useState(0);
-    const [isActive, setIsActive] = useState(true); // Toggle state for text
     const [playerBottom, setPlayerBottom] = useState(16); // Player's bottom position
+    const [score, setScore] = useState(0); // Player's score
+    const [gameSpeed, setGameSpeed] = useState(SPEED); // Dynamic game speed
+    const [isActive, setIsActive] = useState(true); // Toggle state for text
     const [obstacles, setObstacles] = useState([]); // Array of obstacles
+    const [gameOver, setGameOver] = useState(false); // Game over state
+    const [gameStarted, setGameStarted] = useState(false); // Game started state
+
+    // References
     const animationRef = useRef(null);
     const mouseHeld = useRef(false); // Track if left mouse button is currently held
+    const lastSpawnTime = useRef(Date.now()); // Obstacle Spawner Timer
 
     // Particle configurations
     const particles = [
@@ -55,6 +63,24 @@ const JumpGame = () => {
         { initialX: 200, cycleDistance: 350, topPosition: '30%', size: 6, opacity: 0.25 },
         { initialX: 600, cycleDistance: 450, topPosition: '60%', size: 10, opacity: 0.15 },
     ];
+
+    // Score system - increases every 100ms (10 points per second)
+    useEffect(() => {
+        if (gameOver || !gameStarted) return;
+
+        const scoreInterval = setInterval(() => {
+            setScore(prev => prev + 1);
+        }, 100);
+
+        return () => clearInterval(scoreInterval);
+    }, [gameOver, gameStarted]);
+
+    // Difficulty scaling - increases speed every 100 points
+    useEffect(() => {
+        const speedMultiplier = 1 + Math.floor(score / 100) * 0.2; // +20% speed every 100 points
+        const newSpeed = SPEED * speedMultiplier;
+        setGameSpeed(newSpeed);
+    }, [score]);
 
     // Side Scroller Animation Handler
     useEffect(() => {
@@ -99,12 +125,45 @@ const JumpGame = () => {
         };
     }, []);
 
+    // Collision Listener
+    useEffect(() => {
+        if (gameOver || !gameStarted) return;
+        
+        const checkCollision = () => {
+            const playerLeft = 80;
+            const playerRight = playerLeft + 32; // Player width
+            const playerBottomPos = playerBottom; // Player's bottom position from ground
+            const playerTopPos = playerBottom + 32; // Player's top position from ground
+            
+            for (const obstacle of obstacles) {
+                const obstacleLeft = obstacle.position;
+                const obstacleRight = obstacle.position + 32; // Obstacle width
+                const obstacleBottomPos = GROUND_Y; // Obstacle bottom at ground level
+                const obstacleTopPos = GROUND_Y + obstacle.height; // Obstacle top
+                
+                // Check horizontal overlap
+                const horizontalOverlap = playerRight > obstacleLeft && playerLeft < obstacleRight;
+                
+                // Check vertical overlap
+                const verticalOverlap = playerBottomPos < obstacleTopPos && playerTopPos > obstacleBottomPos;
+                
+                if (horizontalOverlap && verticalOverlap) {
+                    setGameOver(true);
+                    return;
+                }
+            }
+        };
+        
+        const collisionInterval = setInterval(checkCollision, 16);
+        return () => clearInterval(collisionInterval);
+    }, [obstacles, playerBottom, gameOver, gameStarted]);
+
     // Jump Cycle Handler
     useEffect(() => {
         const handleClick = (event) => {
-            if (event.button === 0 && playerBottom === GROUND_Y) { // Only jump if on ground
+            if (event.button === 0 && playerBottom === GROUND_Y && !gameOver && gameStarted) { // Only jump if on ground
                 let currentHeight = GROUND_Y;
-                let velocity = JUMP_VELOCITY; // Start with upward velocity
+                let velocity = VELOCITY; // Start with upward velocity
                 let peakReached = false; // Track if peak has been reached
                 
                 // Physics Loop (Runs every 16ms ~60fps)
@@ -148,34 +207,43 @@ const JumpGame = () => {
         return () => {
             window.removeEventListener('mousedown', handleClick);
         };
-    }, [playerBottom]);
+    }, [playerBottom, gameOver, gameStarted]);
 
-    // Obstacle spawner handler
+    // Obstacle Spawner Handler
     useEffect(() => {
-        const spawnObstacle = () => {
-            const newObstacle = {
-                id: Date.now(),
-                position: 800,
-                height: Math.floor(Math.random() * (100 - 40 + 1)) + 40
-            };
-            setObstacles(prev => [...prev, newObstacle]);
+        if (gameOver || !gameStarted) return;
+
+        const checkSpawn = () => {
+            const currentTime = Date.now();
+            const spawnDelay = Math.max(1000, 3000 - (gameSpeed * 200));
+            
+            if (currentTime - lastSpawnTime.current >= spawnDelay) {
+                const newObstacle = {
+                    id: currentTime,
+                    position: 800,
+                    height: Math.floor(Math.random() * (100 - 40 + 1)) + 40
+                };
+                setObstacles(prev => [...prev, newObstacle]);
+                lastSpawnTime.current = currentTime;
+            }
+            
+            requestAnimationFrame(checkSpawn);
         };
 
-        // Faster obstacles = more frequent spawns
-        const spawnDelay = Math.max(1000, 3000 - (OBSTACLE_SPEED * 200));
-        const spawnInterval = setInterval(spawnObstacle, spawnDelay);
+        const animId = requestAnimationFrame(checkSpawn);
+        return () => cancelAnimationFrame(animId);
+    }, [gameSpeed, gameOver, gameStarted]);
 
-        return () => clearInterval(spawnInterval);
-    }, [OBSTACLE_SPEED]);
-
-    // Obstacle movement handler
+    // Obstacle Movement Handler
     useEffect(() => {
+        if (gameOver || !gameStarted) return;
+
         const moveObstacles = () => {
             setObstacles(prev => 
                 prev
                     .map(obstacle => ({
                         ...obstacle,
-                        position: obstacle.position - OBSTACLE_SPEED
+                        position: obstacle.position - gameSpeed
                     }))
                     .filter(obstacle => obstacle.position > -50)
             );
@@ -184,10 +252,53 @@ const JumpGame = () => {
         const moveInterval = setInterval(moveObstacles, 16);
 
         return () => clearInterval(moveInterval);
-    }, [OBSTACLE_SPEED]);
+    }, [gameSpeed, gameOver, gameStarted]);
+
+    // Restart Game Function
+    const restartGame = () => {
+        setScore(0);
+        setGameSpeed(SPEED);
+        setObstacles([]);
+        setPlayerBottom(GROUND_Y);
+        lastSpawnTime.current = Date.now();
+        setGameOver(false);
+        setGameStarted(true);
+    };
+
+    // Start Game Function
+    const startGame = () => {
+        setGameStarted(true);
+    };
 
     return (
         <div className="relative w-full h-full bg-gradient-to-l from-lavender/30 to-royal/30 overflow-hidden rounded-2xl">
+            {/* Start Game */}
+            {!gameStarted && (
+                <div 
+                    className="absolute inset-0 bg-black/90 z-10 flex items-center justify-center cursor-pointer"
+                    onClick={startGame}
+                >
+                    <div className="text-white text-center">
+                        <h1 className="text-5xl font-medium">WANNA PLAY A GAME?</h1>
+                        <div className="text-sm absolute bottom-6 text-subtext left-1/2 transform -translate-x-1/2 opacity-70">Press LEFT CLICK to Start</div>
+                    </div>
+                </div>
+            )}
+
+            {/* Game Over */}
+            {gameOver && (
+                <div 
+                    className="absolute inset-0 bg-black/90 z-10 flex items-center justify-center cursor-pointer"
+                    onClick={restartGame}
+                >
+                    <div className="text-white text-center">
+                        <h1 className="text-5xl font-medium">GAME OVER</h1>
+                        <p className="text-subtext">Score: {score}</p>
+                        <div className="text-sm absolute bottom-6 text-subtext left-1/2 transform -translate-x-1/2 opacity-70">Press LEFT CLICK to Restart</div>
+                    </div>
+                </div>
+            )}
+
             {/* Ground */}
             <div className="absolute bottom-0 w-full h-4 bg-gray-600"/>
             
@@ -228,14 +339,24 @@ const JumpGame = () => {
                 }}
             />
 
-            {/* Dynamic Text Overlay */}
-            <div className="absolute top-4 left-4 text-white text-sm font-mono">
-                {!isActive ? 'Jumping' : 'Release'}
+            {/* Score Display */}
+            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 items-center">
+                <h3 className="text-heading">{score}</h3>
             </div>
+
+            {/* Speed Indicator */}
+            {/* <div className="absolute top-14 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono opacity-50">
+                Speed: {gameSpeed.toFixed(1)}x
+            </div> */}
+
+            {/* Dynamic Text Overlay */}
+            {/* <div className="absolute top-4 left-4 text-white text-sm font-mono">
+                {!isActive ? 'Jumping' : 'Release'}
+            </div> */}
 
             {/* Instructions */}
             <div className="absolute top-4 right-4 text-white text-xs font-mono opacity-70">
-                {playerBottom} Press LEFT CLICK to toggle
+                Press LEFT CLICK to Jump
             </div>
         </div>
     );
