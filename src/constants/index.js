@@ -22,7 +22,7 @@ export const myProjects = [
       ]
     },
     links: {
-      demo: "/mayday",
+      demo: "",
       download: "https://github.com/rep-azy/indang-mayday/releases/download/v1.0.4/mayday-app-v1.0.4.apk"
     },
     images: {
@@ -60,16 +60,27 @@ export const myProjects = [
   },
   {
     id: 2,
-    title: "GEOMAP: An Android-based Geographic Emergency Reporting System",
+    title: "GEOMAP",
     description:
-      "A mobile-first emergency reporting system designed to connect community users with responders, integrating real-time geolocation, tracking, and optimized routing.",
+      "An Android-based geographic emergency reporting system designed to connect community users with responders, integrating real-time geolocation, tracking, and optimized routing.",
     subDescription: {
       general: [
-        "Developed with React Native for cross-platform mobile deployment.",
-        "Utilized Firebase Realtime Database for secure, real-time data management.",
-        "Integrated Google Maps API for GPS, mapping, and geolocation features.",
-        "Implemented Dijkstra's and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
-        "Covered four core modules: user management, geolocation, tracking, and reporting."
+        "Built with React Native and Firebase Realtime Database.",
+        "Integrated Google Maps API for GPS, mapping, and geolocation.",
+        "Implemented Dijkstra's and A* algorithms for optimal routing.",
+        "Implemented Dijkstra's and A* algorithms for optimal routing.",
+        "Designed around four core modules: user management, geolocation, tracking, and reporting."
+      ],
+      mobile: [
+        "Android-focused emergency reporting with real-time tracking.",
+        "Captured photo evidence directly through the device camera.",
+        "Auto-tagged reports with geolocation and timestamps.",
+        "Displayed live responder movement and ETA updates."
+      ],
+      web: [
+        "Admin dashboard built with React for managing reports and users.",
+        "Real-time map view for monitoring emergencies and responders.",
+        "Tools for verifying accounts and managing station information."
       ]
     },
     links: {
@@ -80,7 +91,7 @@ export const myProjects = [
       web: "/assets/projects/geomap-web-reports.png",
       mobile: "/assets/projects/geomap-mobile.png"
     },
-    logo: "",
+    logo: null,
     tags: [
       {
         id: 1,
@@ -106,23 +117,31 @@ export const myProjects = [
   },
   {
     id: 3,
-    title: "Portfolio Website",
-    description: "A modern portfolio website built with React and TailwindCSS.",
+    title: "Olympus",
+    description: "An autumn-themed personal portfolio featuring 3D interactive elements, showcasing my projects, artwork, experience, and providing seamless ways to connect.",
     subDescription: {
       general: [
-        "Responsive design with smooth animations.",
-        "Optimized for performance and SEO.",
-      ]
+        "Immersive autumn aesthetic with warm color palette and seasonal design elements.",
+        "Interactive 3D models and environments creating an engaging user experience.",
+        "Smooth scroll-based animations and page transitions throughout the site.",
+      ],
+      web: [
+        "Built with React, Three.js, and Framer Motion for 3D interactions and animations",
+        "Styled with TailwindCSS, Aceternity UI, and Magic UI for polished components",
+        "Project showcase with live demos and detailed case studies",
+        "Art gallery with lightbox view and filtering options",
+      ],
+      mobile: null
     },
     links: {
       demo: "/",
       download: null
     },
     images: {
-      web: "/assets/projects/portfolio-web.png",
+      web: "/assets/projects/olympus-web.png",
       mobile: null
     },
-    logo: "/assets/logos/portfolio.png",
+    logo: null,
     tags: [
       {
         id: 1,
@@ -134,59 +153,15 @@ export const myProjects = [
         name: "TailwindCSS",
         path: "/assets/logos/tailwindcss.svg",
       },
-    ],
-  },
-  {
-    id: 4,
-    title: "Fitness Tracker",
-    description: "A mobile app for tracking workouts and nutrition.",
-    subDescription: [
-      "Built with React Native and Expo.",
-      "Integrated with health APIs for data syncing.",
-    ],
-    links: {
-      demo: null,
-      download: "/downloads/fitness-tracker.apk"
-    },
-    images: {
-      web: null,
-      mobile: "/assets/projects/fitness-mobile.png"
-    },
-    logo: "/assets/logos/fitness.png",
-    tags: [
       {
-        id: 1,
-        name: "React Native",
-        path: "/assets/logos/reactnative.svg",
+        id: 3,
+        name: "Vite",
+        path: "/assets/logos/vitejs.svg",
       },
       {
-        id: 2,
-        name: "Expo",
-        path: "/assets/logos/expo.svg",
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "E-commerce Platform",
-    description: "A full-stack e-commerce solution.",
-    subDescription: [
-      "Currently in development.",
-    ],
-    links: {
-      demo: null,
-      download: null
-    },
-    images: {
-      web: "/assets/projects/ecommerce-web.png",
-      mobile: null
-    },
-    logo: "/assets/logos/ecommerce.png",
-    tags: [
-      {
-        id: 1,
-        name: "Next.js",
-        path: "/assets/logos/nextjs.svg",
+        id: 4,
+        name: "ThreeJS",
+        path: "/assets/logos/threejs.svg",
       },
     ],
   }

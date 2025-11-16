@@ -1,6 +1,17 @@
 # Olympus Portfolio
 
-A modern portfolio project built with **Vite** and **JavaScript/React**.
+An **autumn-themed** personal portfolio featuring **3D interactive elements**, showcasing projects, artwork, and experience. Built with **Vite**, **React**, **Three.js**, and **TailwindCSS**.
+
+---
+
+## ✨ Features
+
+- 🍂 Immersive autumn aesthetic with warm, seasonal design
+- 🎨 Interactive 3D models and environments powered by Three.js
+- ✨ Smooth scroll-based animations with Framer Motion
+- 🖼️ Art gallery with lightbox view and filtering
+- 📱 Fully responsive design across all devices
+- 📧 Working contact form using EmailJS
 
 ---
 
@@ -37,10 +48,13 @@ npm run preview
 ---
 
 ## 📁 Project Structure
-
 ```
 olympus/
 ├── src/                 # Source files
+│   ├── components/      # React components
+│   ├── sections/        # Page sections
+│   ├── constants/       # Project data and configs
+│   └── assets/          # Images and 3D models
 ├── public/              # Static assets
 ├── package.json         # Project configuration
 ├── tailwind.config.js   # Tailwind configuration
@@ -52,9 +66,13 @@ olympus/
 
 ## 🧰 Tech Stack
 
-- [Vite](https://vitejs.dev/)
-- [React](https://react.dev/) or Vanilla JS (depending on setup)
-- [Node.js](https://nodejs.org/)
+- [React](https://react.dev/) - UI framework
+- [Vite](https://vitejs.dev/) - Build tool
+- [Three.js](https://threejs.org/) - 3D graphics library
+- [Framer Motion](https://www.framer.com/motion/) - Animation library
+- [TailwindCSS](https://tailwindcss.com/) - Styling framework
+- [Aceternity UI](https://ui.aceternity.com/) & [Magic UI](https://magicui.design/) - UI components
+- [EmailJS](https://www.emailjs.com/) - Contact form integration
 
 ---
 
@@ -63,6 +81,7 @@ olympus/
 - Run `npm run` to see all available scripts.
 - Ensure Node.js ≥ 18 and npm ≥ 9 are installed.
 - If `npm start` fails, use `npm run dev`.
+- 3D models may take a moment to load on first visit.
 
 ---
 

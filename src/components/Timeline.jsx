@@ -49,13 +49,13 @@ export const Timeline = ({
                             </div>
                             <ul className="space-y-3">
                                 {item.contents.map((content, index) => (
-                                    <>
+                                    <React.Fragment key={index}>
                                         <li className="flex gap-3 font-normal text-neutral-300 mb-6" key={index}>
                                             <span className="text-sun mt-1.5">•</span>
                                             <span>{content}</span>
                                         </li>
                                         <div className="w-full h-px bg-gradient-to-r from-transparent via-neutral-700 to-transparent" />
-                                    </>
+                                    </React.Fragment>
                                 ))}
                             </ul>
                         </div>

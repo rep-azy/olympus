@@ -19,14 +19,14 @@ const Particle = ({ scrollOffset, initialX, cycleDistance, topPosition, size, op
 };
 
 // Obstacle Component
-const Obstacle = ({ position, height }) => {
+const Obstacle = ({ position, height, width }) => {
     return (
         <div 
             className="absolute bg-red-600"
             style={{ 
                 left: `${position}px`,
-                bottom: '16px', // Same level as ground
-                width: '32px',
+                bottom: '16px',
+                width: `${width}px`, // Now uses dynamic width
                 height: `${height}px`,
             }}
         />
@@ -44,6 +44,7 @@ const JumpGame = () => {
     const [scrollOffset, setScrollOffset] = useState(0);
     const [playerBottom, setPlayerBottom] = useState(16); // Player's bottom position
     const [score, setScore] = useState(0); // Player's score
+    const [highScore, setHighScore] = useState(0);
     const [gameSpeed, setGameSpeed] = useState(SPEED); // Dynamic game speed
     const [isActive, setIsActive] = useState(true); // Toggle state for text
     const [obstacles, setObstacles] = useState([]); // Array of obstacles
@@ -53,6 +54,7 @@ const JumpGame = () => {
     // References
     const gameContainerRef = useRef(null);
     const animationRef = useRef(null);
+    const jumpIntervalRef = useRef(null);
     const mouseHeld = useRef(false); // Track if left mouse button is currently held
     const lastSpawnTime = useRef(Date.now()); // Obstacle Spawner Timer
 
@@ -135,29 +137,32 @@ const JumpGame = () => {
         
         const checkCollision = () => {
             const playerLeft = 80;
-            const playerRight = playerLeft + 32; // Player width
-            const playerBottomPos = playerBottom; // Player's bottom position from ground
-            const playerTopPos = playerBottom + 32; // Player's top position from ground
+            const playerRight = playerLeft + 32;
+            const playerBottomPos = playerBottom;
+            const playerTopPos = playerBottom + 32;
             
             for (const obstacle of obstacles) {
                 const obstacleLeft = obstacle.position;
-                const obstacleRight = obstacle.position + 32; // Obstacle width
-                const obstacleBottomPos = GROUND_Y; // Obstacle bottom at ground level
-                const obstacleTopPos = GROUND_Y + obstacle.height; // Obstacle top
+                const obstacleRight = obstacle.position + obstacle.width;
+                const obstacleBottomPos = GROUND_Y;
+                const obstacleTopPos = GROUND_Y + obstacle.height;
                 
-                // Check horizontal overlap
-                const horizontalOverlap = playerRight > obstacleLeft && playerLeft < obstacleRight;
-                
-                // Check vertical overlap
-                const verticalOverlap = playerBottomPos < obstacleTopPos && playerTopPos > obstacleBottomPos;
+                // More precise collision with small buffer for edge cases
+                const horizontalOverlap = (playerRight - 2) > obstacleLeft && (playerLeft + 2) < obstacleRight;
+                const verticalOverlap = (playerBottomPos + 2) < obstacleTopPos && (playerTopPos - 2) > obstacleBottomPos;
                 
                 if (horizontalOverlap && verticalOverlap) {
+                    if (jumpIntervalRef.current) {
+                        clearInterval(jumpIntervalRef.current); // ADD THIS
+                    }
                     setGameOver(true);
+                    setPlayerBottom(playerBottom); // Stop movement immediately
                     return;
                 }
             }
         };
         
+        // Run at same rate as physics (60fps) for immediate detection
         const collisionInterval = setInterval(checkCollision, 16);
         return () => clearInterval(collisionInterval);
     }, [obstacles, playerBottom, gameOver, gameStarted]);
@@ -199,13 +204,15 @@ const JumpGame = () => {
                                 
                                 setPlayerBottom(Math.round(fallHeight));
                             }, 16);
-                        }, 150);
+                            jumpIntervalRef.current = jumpInterval;
+                        }, 100);
                         
                         return;
                     }
                     
                     setPlayerBottom(Math.round(currentHeight));
                 }, 16);
+                jumpIntervalRef.current = jumpInterval;
             }
         };
 
@@ -217,7 +224,7 @@ const JumpGame = () => {
     }, [playerBottom, gameOver, gameStarted]);
 
     // Obstacle Spawner Handler
-    useEffect(() => {
+    /* useEffect(() => {
         if (gameOver || !gameStarted) return;
 
         const checkSpawn = () => {
@@ -229,6 +236,31 @@ const JumpGame = () => {
                     id: currentTime,
                     position: 800,
                     height: Math.floor(Math.random() * (100 - 40 + 1)) + 40
+                };
+                setObstacles(prev => [...prev, newObstacle]);
+                lastSpawnTime.current = currentTime;
+            }
+            
+            requestAnimationFrame(checkSpawn);
+        };
+
+        const animId = requestAnimationFrame(checkSpawn);
+        return () => cancelAnimationFrame(animId);
+    }, [gameSpeed, gameOver, gameStarted]); */
+
+    useEffect(() => {
+        if (gameOver || !gameStarted) return;
+
+        const checkSpawn = () => {
+            const currentTime = Date.now();
+            const baseSpawnDelay = Math.max(1000, 3000 - (gameSpeed * 200));
+            
+            if (currentTime - lastSpawnTime.current >= baseSpawnDelay) {
+                const newObstacle = {
+                    id: currentTime,
+                    position: 800,
+                    height: 60,
+                    width: Math.floor(Math.random() * (120 - 32 + 1)) + 32 // Width between 32-120px
                 };
                 setObstacles(prev => [...prev, newObstacle]);
                 lastSpawnTime.current = currentTime;
@@ -263,6 +295,11 @@ const JumpGame = () => {
 
     // Restart Game Function
     const restartGame = () => {
+        // Update high score if current score is higher
+        if (score > highScore) {
+            setHighScore(score);
+        }
+
         setScore(0);
         setGameSpeed(SPEED);
         setObstacles([]);
@@ -301,6 +338,7 @@ const JumpGame = () => {
                     <div className="text-white text-center">
                         <h1 className="text-5xl font-medium">GAME OVER</h1>
                         <p className="text-subtext">Score: {score}</p>
+                        <p className="text-subtext">Highscore: {highScore}</p>
                         <div className="text-sm absolute bottom-6 text-subtext left-1/2 transform -translate-x-1/2 opacity-70">Press LEFT CLICK to Restart</div>
                     </div>
                 </div>
@@ -328,6 +366,7 @@ const JumpGame = () => {
                     key={obstacle.id}
                     position={obstacle.position}
                     height={obstacle.height}
+                    width={obstacle.width}
                 />
             ))}
 
@@ -345,6 +384,7 @@ const JumpGame = () => {
             {/* Score Display */}
             <div className="absolute top-2 left-1/2 transform -translate-x-1/2 items-center">
                 <h3 className="text-heading">{score}</h3>
+                <p className="text-white text-sm font-mono">HI {highScore}</p>
             </div>
 
             {/* Speed Indicator */}
