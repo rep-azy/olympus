@@ -4,17 +4,32 @@ export const myProjects = [
     title: "Mayday",
     description:
       "An emergency reporting system for Indang, Cavite, enabling community reporting and streamlined management for responders and administrators via mobile and web platforms.",
-    subDescription: [
-      "Built with React Native (mobile) and React (web dashboard).",
-      "Used Firebase for authentication, Firestore database, and cloud storage.",
-      "Implemented role-based access for community, responder, and admin workflows.",
-      "Developed the admin dashboard with Material UI and DataGrid.",
-      "Added mobile features for reports, photo evidence, geolocation, and responder tracking.",
-      "Applied TailwindCSS and custom styling for a modern, responsive UI.",
-    ],
-    href: "",
+    subDescription: {
+      general: [
+        "A project for community safety and emergency response.",
+        "Built with Firebase for authentication, Firestore database, and cloud storage.",
+        "Modern, responsive UI with TailwindCSS and custom styling.",
+      ],
+      web: [
+        "Admin dashboard built with React and Material UI",
+        "DataGrid for managing reports and user data",
+        "Real-time monitoring of emergency reports and responder status",
+      ],
+      mobile: [
+        "Built with React Native for Android",
+        "Photo evidence upload with geolocation tagging",
+        "Real-time responder tracking and notifications",
+      ]
+    },
+    links: {
+      demo: "/mayday",
+      download: "https://github.com/rep-azy/indang-mayday/releases/download/v1.0.4/mayday-app-v1.0.4.apk"
+    },
+    images: {
+      web: "/assets/projects/mayday-web.png",
+      mobile: "/assets/projects/mayday-mobile.png"
+    },
     logo: "/assets/logos/mayday.png",
-    image: "/assets/projects/mayday-web.png",
     tags: [
       {
         id: 1,
@@ -48,16 +63,24 @@ export const myProjects = [
     title: "GEOMAP: An Android-based Geographic Emergency Reporting System",
     description:
       "A mobile-first emergency reporting system designed to connect community users with responders, integrating real-time geolocation, tracking, and optimized routing.",
-    subDescription: [
-      "Developed with React Native for cross-platform mobile deployment.",
-      "Utilized Firebase Realtime Database for secure, real-time data management.",
-      "Integrated Google Maps API for GPS, mapping, and geolocation features.",
-      "Implemented Dijkstra's and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
-      "Covered four core modules: user management, geolocation, tracking, and reporting."
-    ],
-    href: "",
+    subDescription: {
+      general: [
+        "Developed with React Native for cross-platform mobile deployment.",
+        "Utilized Firebase Realtime Database for secure, real-time data management.",
+        "Integrated Google Maps API for GPS, mapping, and geolocation features.",
+        "Implemented Dijkstra's and A* pathfinding algorithms for optimal route calculation and ETA prediction.",
+        "Covered four core modules: user management, geolocation, tracking, and reporting."
+      ]
+    },
+    links: {
+      demo: null,
+      download: null
+    },
+    images: {
+      web: "/assets/projects/geomap-web-reports.png",
+      mobile: "/assets/projects/geomap-mobile.png"
+    },
     logo: "",
-    image: "/assets/projects/geomap-web-reports.png",
     tags: [
       {
         id: 1,
@@ -78,6 +101,92 @@ export const myProjects = [
         id: 4,
         name: "Pathfinding",
         path: "/assets/logos/algorithm.png",
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Portfolio Website",
+    description: "A modern portfolio website built with React and TailwindCSS.",
+    subDescription: {
+      general: [
+        "Responsive design with smooth animations.",
+        "Optimized for performance and SEO.",
+      ]
+    },
+    links: {
+      demo: "/",
+      download: null
+    },
+    images: {
+      web: "/assets/projects/portfolio-web.png",
+      mobile: null
+    },
+    logo: "/assets/logos/portfolio.png",
+    tags: [
+      {
+        id: 1,
+        name: "React",
+        path: "/assets/logos/react.svg",
+      },
+      {
+        id: 2,
+        name: "TailwindCSS",
+        path: "/assets/logos/tailwindcss.svg",
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Fitness Tracker",
+    description: "A mobile app for tracking workouts and nutrition.",
+    subDescription: [
+      "Built with React Native and Expo.",
+      "Integrated with health APIs for data syncing.",
+    ],
+    links: {
+      demo: null,
+      download: "/downloads/fitness-tracker.apk"
+    },
+    images: {
+      web: null,
+      mobile: "/assets/projects/fitness-mobile.png"
+    },
+    logo: "/assets/logos/fitness.png",
+    tags: [
+      {
+        id: 1,
+        name: "React Native",
+        path: "/assets/logos/reactnative.svg",
+      },
+      {
+        id: 2,
+        name: "Expo",
+        path: "/assets/logos/expo.svg",
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: "E-commerce Platform",
+    description: "A full-stack e-commerce solution.",
+    subDescription: [
+      "Currently in development.",
+    ],
+    links: {
+      demo: null,
+      download: null
+    },
+    images: {
+      web: "/assets/projects/ecommerce-web.png",
+      mobile: null
+    },
+    logo: "/assets/logos/ecommerce.png",
+    tags: [
+      {
+        id: 1,
+        name: "Next.js",
+        path: "/assets/logos/nextjs.svg",
       },
     ],
   }
@@ -269,7 +378,7 @@ export const experiences = [
   {
     title: "Software Developer Student",
     job: "Emergency Reporting System Project",
-    date: "Jan 2025 - Present",
+    date: "Jan - Oct 2025",
     contents: [
       "Developed a cross-platform emergency reporting system, consisting of a mobile application for the community and a web dashboard for administrators.",
       "Built the mobile application using React Native and JavaScript, integrating Google Maps API for geolocation, Firebase for authentication and database management, and Cloudinary API for secure photo evidence storage.",
@@ -338,5 +447,183 @@ export const reviews = [
     username: "@eve",
     body: "So glad I found this. It has changed the game for me.",
     img: "https://robohash.org/eve",
+  },
+];
+
+export const artworks = [
+  {
+    img: "assets/artworks/doodle-1.png",
+    title: "Rain Frog",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-2.png",
+    title: "Sacred Deer",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-3.png",
+    title: "Old Shoe",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-4.png",
+    title: "Sleeping Bat",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-5.png",
+    title: "Block Head",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-6.png",
+    title: "Angel Duck",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-7.png",
+    title: "Ancient Aligator",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-8.png",
+    title: "Chef Dog",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-9.png",
+    title: "Adorable Owl",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-10.png",
+    title: "Koala Farmer",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-11.png",
+    title: "Rockstar Cat",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-12.png",
+    title: "Ghost Girl",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-13.png",
+    title: "Sentient Cactus",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-14.png",
+    title: "Barista Snake",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-15.png",
+    title: "Jackalope",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-16.png",
+    title: "Summer Heat",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-17.png",
+    title: "Spinal Cat",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-18.png",
+    title: "Tentacle Beenie",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-19.png",
+    title: "Train Golem",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-20.png",
+    title: "Carrot Dog",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-21.png",
+    title: "Flora Fae",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-22.png",
+    title: "Holiday Frog",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-23.png",
+    title: "Missile Toad",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-24.png",
+    title: "Trick 'r Treater",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-25.png",
+    title: "Arch Goat",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-26.png",
+    title: "Will 'o Wisp",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-27.png",
+    title: "Birch Ent",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-28.png",
+    title: "Mushroom Ninja",
+    category: "Doodle"
+  },
+  {
+    img: "assets/artworks/doodle-30.png",
+    title: "Chainsaw Man",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-31.png",
+    title: "Lady Reze",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-32.png",
+    title: "Ms. Makima",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-33.png",
+    title: "Power",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-34.png",
+    title: "Aki",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-35.png",
+    title: "Angel Devil",
+    category: "Fanart"
+  },
+  {
+    img: "assets/artworks/doodle-36.png",
+    title: "Beam",
+    category: "Fanart"
   },
 ];

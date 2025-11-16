@@ -1,12 +1,12 @@
 import HeroText from "../components/HeroText";
 import ParallaxBg from "../components/ParallaxBg";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Astronaut } from "../components/Astronaut";
 import { easing } from "maath";
 import { useMediaQuery } from "react-responsive";
-import { Float } from "@react-three/drei";
+import { Float, OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 import Loader from "../components/Loader";
+import { Bird } from "../components/Bird";
 
 const Hero = () => {
     const isMobile = useMediaQuery({ maxWidth: 853 });
@@ -19,7 +19,7 @@ const Hero = () => {
                 <Canvas camera={{ position: [0, 1, 3]}}>
                     <Suspense fallback={<Loader />}>
                         <Float>
-                            <Astronaut scale={isMobile && 0.23} position={isMobile && [0, -1.5, 0]} />
+                            <Bird scale={1} position={(1.2, 0.5, 0)} />
                             <Rig />
                         </Float>
                     </Suspense>

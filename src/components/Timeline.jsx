@@ -27,12 +27,13 @@ export const Timeline = ({
     return (
         <div className="c-space section-spacing" ref={containerRef}>
             <h2 className="text-heading">My Work Experience</h2>
+            <div className="bg-gradient-to-r from-transparent via-neutral-700 to-transparent mt-12 h-[1px] w-full" />
             <div ref={ref} className="relative pb-20">
                 {data.map((item, index) => (
-                    <div key={index} className="flex justify-start pt-10 md:pt-40 md:gap-10">
-                        <div className="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
-                            <div className="w-10 h-10 absolute -left-[15px] rounded-full bg-midnight flex items-center justify-center">
-                                <div className="h-4 w-4 rounded-full border bg-neutral-800 border-neutral-700 p-2" />
+                    <div key={index} className="flex justify-start pt-2 md:pt-8 md:gap-2">
+                        <div className="sticky flex flex-col md:flex-row z-10 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+                            <div className="w-10 h-10 absolute -left-[15px] rounded-full bg-sun flex items-center justify-center">
+                                <div className="h-4 w-4 rounded-full border bg-yellow-200 border-yellow-300 p-2" />
                             </div>
                             <div className="flex-col hidden gap-2 text-xl font-bold md:flex md:pl-20 md:text-4xl text-neutral-300">
                                 <h3>{item.date}</h3>
@@ -46,9 +47,17 @@ export const Timeline = ({
                                 <h3>{item.job}</h3>
                                 <h3>{item.date}</h3>
                             </div>
-                            {item.contents.map((content, index) => (
-                                <p className="mb-3 font-normal text-neutral-400" key={index}>{content}</p>
-                            ))}
+                            <ul className="space-y-3">
+                                {item.contents.map((content, index) => (
+                                    <>
+                                        <li className="flex gap-3 font-normal text-neutral-300 mb-6" key={index}>
+                                            <span className="text-sun mt-1.5">•</span>
+                                            <span>{content}</span>
+                                        </li>
+                                        <div className="w-full h-px bg-gradient-to-r from-transparent via-neutral-700 to-transparent" />
+                                    </>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 ))}
@@ -58,7 +67,7 @@ export const Timeline = ({
                             height: heightTransform,
                             opacity: opacityTransform,
                         }}
-                        className="absolute inset-x-0 top-0  w-[2px] bg-gradient-to-t from-purple-500 via-lavender/50 to-transparent from-[0%] via-[10%] rounded-full"
+                        className="absolute inset-x-0 top-0  w-[2px] bg-gradient-to-t from-sun via-sand/50 to-transparent from-[0%] via-[10%] rounded-full"
                     />
                 </div>
             </div>

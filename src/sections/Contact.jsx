@@ -63,14 +63,14 @@ const Contact = () => {
     return (
         <section className="relative flex items-center c-space section-spacing">
             <Particles
-                className="absolute inset-0 -z-50"
+                className="absolute inset-0 -z-50 pointer-events-none"
                 quantity={100}
                 ease={80}
                 color={'#fff'}
                 refresh
             />
             {showAlert && <Alert type={alertType} text={alertMessage} />}
-            <div className="flex flex-col items-center justify-center max-w-md p-5 mx-auto border border-white/10 rounded-2xl bg-primary">
+            <div className="flex flex-col items-center justify-center max-w-md p-5 mx-auto border border-white/10 rounded-2xl bg-black relative z-10">
                 <div className="flex flex-col items-start w-full gap-5 mb-10">
                     <h2 className="text-heading">
                         Let's Talk
@@ -92,7 +92,7 @@ const Contact = () => {
                         <label htmlFor="message" className="block mb-2 text-sm font-medium text-white">Message</label>
                         <textarea id="message" name="message" type="text" rows="4" className="field-input field-input-focus" placeholder="Share your thoughts..." required autoComplete="message" value={formData.message} onChange={handleChange}/>
                     </div>
-                    <button type="submit" className="w-full px=1 py-3 text-lg text-center rounded-md cursor-pointer bg-radial from-lavender to-royal hover-animation">
+                    <button type="submit" className="w-full px=1 py-3 text-lg text-center rounded-md cursor-pointer bg-radial from-sand to-sun hover-animation">
                         {isLoading ? "Sending..." : "Send"}
                     </button>
                 </form>

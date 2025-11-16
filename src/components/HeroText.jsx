@@ -2,7 +2,7 @@ import { FlipWords } from "./FlipWords";
 import { motion } from "motion/react";
 
 const HeroText = () => {
-    const words=["Git Push", "Pray", "Deploy"]; // Words to flip
+    const words=["Vibrant", "Intuitive", "Delightful", "Elegant"]; // Words to flip
     const name = "Hi, I'm Azy";
     const variants = {
         hidden: { opacity: 0, x: -50 },
@@ -20,13 +20,13 @@ const HeroText = () => {
 
                 <div className="flex flex-col items-start">
                     <motion.p className="text-5xl font-medium text-neutral-300" variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
-                        A Developer Who Believes In
+                        A Crafter of
                     </motion.p>
                     <motion.div className="-ml-1 -mt-2" variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.5 }}>
                         <FlipWords className="font-black text-white text-8xl" words={words}/>
                     </motion.div>
                     <motion.p className="text-4xl font-medium text-neutral-300" variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.8 }}>
-                        As A Workflow
+                        Web Experiences
                     </motion.p>
                 </div>
             </div>
@@ -38,13 +38,13 @@ const HeroText = () => {
                 </motion.p>
                 <div>
                     <motion.p className="text-5xl font-black text-neutral-300" variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
-                        I believe in
+                        Crafting
                     </motion.p>
                     <motion.div variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.5 }}>
                         <FlipWords className="font-bold text-white text-7xl" words={words}/>
                     </motion.div>
                     <motion.p className="text-4xl font-black text-neutral-300" variants={variants} initial="hidden" animate="visible" transition={{ delay: 1.8 }}>
-                        As A Workflow
+                        Experiences
                     </motion.p>
                 </div>
             </div>

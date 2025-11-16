@@ -1,17 +1,17 @@
 import { useState } from "react";
 import ProjectDetails from "./ProjectDetails";
 
-const Project = ({title, description, subDescription, href, image, tags, setPreview}) => {
+const Project = ({title, description, subDescription, links, images, tags, setPreview}) => {
     const [isHidden, setIsHidden] = useState(false);
 
     return (
         <>
-            <div onMouseEnter={() => setPreview(image)} onMouseLeave={() => setPreview(null)} className="flex-wrap items-center justify-between py-10 space-y-14 sm:flex sm:space-y-0">
+            <div onMouseEnter={() => setPreview(images.web)} onMouseLeave={() => setPreview(null)} className="flex-wrap items-center justify-between py-10 space-y-14 sm:flex sm:space-y-0">
                 <div>
-                    <p className="text-2xl">{title}</p>
-                    <div className="flex gap-5 mt-2 text-sand">
+                    <p className="text-2xl font-bold">{title}</p>
+                    <div className="flex gap-5 mt-4">
                         {tags.map((tag) => (
-                            <span key={tag.id}>{tag.name}</span>
+                            <span key={tag.id} className="px-3 py-1 text-sm font-semibold text-sun bg-sun/10 backdrop-blur-sm rounded-full border border-white/20">{tag.name}</span>
                         ))}
                     </div>
                 </div>
@@ -26,9 +26,9 @@ const Project = ({title, description, subDescription, href, image, tags, setPrev
                     title={title} 
                     description={description}
                     subDescription={subDescription}
-                    image={image}
+                    images={images}
                     tags={tags}
-                    href={href}
+                    links={links}
                     closeModal={() => setIsHidden(false)}
                 />
             }

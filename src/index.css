@@ -14,7 +14,11 @@
   --color-lavender: #7a57db;
   --color-fuchsia: #ca2f8c;
   --color-orange: #cc6033;
-  --color-sand: #d6995c;
+  --color-sun: #fcca59;
+  --color-sand: #cc8f50;
+  --color-sandstone: #7f5a3f;
+  --color-amber: #5d4030;
+  --color-brimstone: #0a0603;
   --color-coral: #ea4884;
   --animate-orbit: orbit 50s linear infinite;
   @keyframes orbit {
@@ -53,7 +57,7 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  background: #030412;
+  background: #090502;
   font-family: "Funnel Display", sans-serif;
   color: white;
   scroll-behavior: smooth;
@@ -119,11 +123,11 @@ body {
 }
 
 .grid-default-color {
-  @apply bg-gradient-to-b from-storm to-indigo rounded-2xl;
+  @apply bg-gradient-to-b from-sand to-amber rounded-2xl;
 }
 
 .grid-special-color {
-  @apply p-6 bg-gradient-to-b from-royal to-lavender rounded-2xl;
+  @apply p-6 bg-gradient-to-b from-sun to-sand rounded-2xl;
 }
 .grid-black-color {
   @apply p-6 bg-gradient-to-tl from-[#3A3A3A] via-[#242424] to-[#3A3A3A] rounded-2xl;

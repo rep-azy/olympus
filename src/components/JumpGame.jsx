@@ -51,6 +51,7 @@ const JumpGame = () => {
     const [gameStarted, setGameStarted] = useState(false); // Game started state
 
     // References
+    const gameContainerRef = useRef(null);
     const animationRef = useRef(null);
     const mouseHeld = useRef(false); // Track if left mouse button is currently held
     const lastSpawnTime = useRef(Date.now()); // Obstacle Spawner Timer
@@ -100,6 +101,9 @@ const JumpGame = () => {
 
     // Jump and Release Listener
     useEffect(() => {
+        const container = gameContainerRef.current;
+        if (!container) return;
+
         const handleMouseDown = (event) => {
             if (event.button !== 0 || mouseHeld.current) return;
             
@@ -116,12 +120,12 @@ const JumpGame = () => {
             setIsActive(true);
         };
 
-        window.addEventListener('mousedown', handleMouseDown);
-        window.addEventListener('mouseup', handleMouseUp);
+        container.addEventListener('mousedown', handleMouseDown);
+        container.addEventListener('mouseup', handleMouseUp);
 
         return () => {
-            window.removeEventListener('mousedown', handleMouseDown);
-            window.removeEventListener('mouseup', handleMouseUp);
+            container.removeEventListener('mousedown', handleMouseDown);
+            container.removeEventListener('mouseup', handleMouseUp);
         };
     }, []);
 
@@ -160,6 +164,9 @@ const JumpGame = () => {
 
     // Jump Cycle Handler
     useEffect(() => {
+        const container = gameContainerRef.current;
+        if (!container) return;
+
         const handleClick = (event) => {
             if (event.button === 0 && playerBottom === GROUND_Y && !gameOver && gameStarted) { // Only jump if on ground
                 let currentHeight = GROUND_Y;
@@ -202,10 +209,10 @@ const JumpGame = () => {
             }
         };
 
-        window.addEventListener('mousedown', handleClick);
+        container.addEventListener('mousedown', handleClick);
 
         return () => {
-            window.removeEventListener('mousedown', handleClick);
+            container.removeEventListener('mousedown', handleClick);
         };
     }, [playerBottom, gameOver, gameStarted]);
 
@@ -271,7 +278,7 @@ const JumpGame = () => {
     };
 
     return (
-        <div className="relative w-full h-full bg-gradient-to-l from-lavender/30 to-royal/30 overflow-hidden rounded-2xl">
+        <div ref={gameContainerRef} className="relative w-full h-full bg-gradient-to-l from-lavender/30 to-royal/30 overflow-hidden rounded-2xl">
             {/* Start Game */}
             {!gameStarted && (
                 <div 
@@ -327,12 +334,8 @@ const JumpGame = () => {
             {/* Player */}
             <motion.div
                 className="absolute w-8 h-8 bg-blue-500"
-                style={{ 
-                    left: '80px',
-                }}
-                animate={{ 
-                    bottom: `${playerBottom}px` 
-                }}
+                style={{ left: '80px' }}
+                animate={{ bottom: `${playerBottom}px` }}
                 transition={{ 
                     duration: 0.01,
                     ease: playerBottom > 16 ? "easeOut" : "easeIn"
