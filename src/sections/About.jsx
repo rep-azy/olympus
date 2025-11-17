@@ -60,6 +60,7 @@ const About = () => {
                         <p className="headtext">Where I'm Rooted</p>
                         <p className="subtext">Working from Silang, Cavite, Philippines. Available for remote projects and nearby opportunities.</p>
                     </div>
+                    <div className={`absolute -right-12 -bottom-12 w-80 h-80 bg-sun opacity-20 rounded-full blur-3xl z-10`} />
                     <figure className="absolute left-[30%] top-[10%]">
                         <Globe />
                     </figure>
