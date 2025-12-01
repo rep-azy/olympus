@@ -1,4 +1,4 @@
-# Olympus Portfolio
+# Olympus
 
 An **autumn-themed** personal portfolio featuring **3D interactive elements**, showcasing projects, artwork, and experience. Built with **Vite**, **React**, **Three.js**, and **TailwindCSS**.
 
@@ -27,9 +27,8 @@ Start the local development server:
 npm run dev
 ```
 
-> 💡 **Note for dummy:**  
+> 💡 **Note for dummies:**  
 > It's `npm run dev` (not `npm start`).
-> Crazy dumbass its only been a month.
 
 ---
 

@@ -33,6 +33,24 @@ const Obstacle = ({ position, height, width }) => {
     );
 };
 
+// Player Sprite Component
+const PlayerSprite = ({ part, variant, state, zIndex }) => {
+    if (variant === 'none') return null;
+    
+    const filename = state 
+        ? `${part}-${variant}-${state}.png`
+        : `${part}-${variant}.png`;
+    
+    return (
+        <img 
+            src={`/assets/game/hero/${filename}`}
+            className="w-full h-full absolute top-1"
+            style={{ zIndex }}
+            alt={filename}
+        />
+    );
+};
+
 // Game constants
 const GRAVITY = 1; // Gravity strength for falling
 const VELOCITY = -20; // Initial upward velocity when jumping
@@ -50,6 +68,22 @@ const JumpGame = () => {
     const [obstacles, setObstacles] = useState([]); // Array of obstacles
     const [gameOver, setGameOver] = useState(false); // Game over state
     const [gameStarted, setGameStarted] = useState(false); // Game started state
+    
+    // Animation states - all in one object
+    const [animationStates, setAnimationStates] = useState({
+        eyesClosed: false,
+        leftShoe: 'idle',   // 'idle', 'ready', 'step'
+        rightShoe: 'idle',  // 'idle', 'ready', 'step'
+        bodyStretch: 1    // 1 = normal, >1 = stretch, <1 = squash
+    });
+
+    // Player customization
+    const [playerCustomization, setPlayerCustomization] = useState({
+        hat: 'default',
+        wear: 'default',
+        shoes: 'default',
+        bag: 'default',
+    });
 
     const [highScore, setHighScore] = useState(() => {
         try {
@@ -152,14 +186,14 @@ const JumpGame = () => {
     }, []);
 
     // Collision Listener
-    useEffect(() => {
+    /* useEffect(() => {
         if (gameOver || !gameStarted) return;
         
         const checkCollision = () => {
-            const playerLeft = 80;
-            const playerRight = playerLeft + 32;
+            const playerLeft = 75;
+            const playerRight = playerLeft + 75;
             const playerBottomPos = playerBottom;
-            const playerTopPos = playerBottom + 32;
+            const playerTopPos = playerBottom + 64;
             
             // Add extra detection margins for more aggressive collision
             const horizontalMargin = 8; // Horizontal detection range
@@ -215,7 +249,7 @@ const JumpGame = () => {
         // Run at same rate as physics (60fps) for immediate detection
         const collisionInterval = setInterval(checkCollision, 16);
         return () => clearInterval(collisionInterval);
-    }, [obstacles, playerBottom, gameOver, gameStarted]);
+    }, [obstacles, playerBottom, gameOver, gameStarted]); */
 
     // Jump Cycle Handler
     useEffect(() => {
@@ -334,6 +368,57 @@ const JumpGame = () => {
         return () => clearInterval(moveInterval);
     }, [gameSpeed, gameOver, gameStarted]);
 
+    // Eye blink animation
+    useEffect(() => {
+        const blinkInterval = setInterval(() => {
+            setAnimationStates(prev => ({ ...prev, eyesClosed: true }));
+            setTimeout(() => {
+                setAnimationStates(prev => ({ ...prev, eyesClosed: false }));
+            }, 150); // Blink duration (eyes closed for 150ms)
+        }, Math.random() * 2000 + 3000); // Random between 3-5 seconds
+
+        return () => clearInterval(blinkInterval);
+    }, []);
+
+    // Running animation
+    useEffect(() => {
+        if (gameOver || !gameStarted) return;
+
+        // Define the cycle for each shoe
+        const rightShoeCycle = ['step', 'ready'];
+        const leftShoeCycle = ['ready', 'step'];
+        
+        let cycleIndex = 0;
+        
+        const runningInterval = setInterval(() => {
+            setAnimationStates(prev => ({
+                ...prev,
+                rightShoe: rightShoeCycle[cycleIndex],
+                leftShoe: leftShoeCycle[cycleIndex],
+                bodyStretch: 1.1
+            }));
+            
+            // Return to normal after brief stretch
+            setTimeout(() => {
+                setAnimationStates(prev => ({
+                    ...prev,
+                    bodyStretch: 0.95 // Slight squash
+                }));
+                
+                setTimeout(() => {
+                    setAnimationStates(prev => ({
+                        ...prev,
+                        bodyStretch: 1 // Back to normal
+                    }));
+                }, 100);
+            }, 100);
+            
+            cycleIndex = (cycleIndex + 1) % 2;
+        }, 500);
+
+        return () => clearInterval(runningInterval);
+    }, [gameOver, gameStarted]);
+
     // Restart Game Function
     const restartGame = () => {
         // Update high score if current score is higher
@@ -365,7 +450,7 @@ const JumpGame = () => {
             {/* Start Game */}
             {!gameStarted && (
                 <div 
-                    className="absolute inset-0 bg-black/90 z-10 flex items-center justify-center cursor-pointer"
+                    className="absolute inset-0 bg-black/90 z-40 flex items-center justify-center cursor-pointer"
                     onClick={startGame}
                 >
                     <div className="text-white text-center">
@@ -378,7 +463,7 @@ const JumpGame = () => {
             {/* Game Over */}
             {gameOver && (
                 <div 
-                    className="absolute inset-0 bg-black/90 z-10 flex items-center justify-center cursor-pointer"
+                    className="absolute inset-0 bg-black/90 z-40 flex items-center justify-center cursor-pointer"
                     onClick={restartGame}
                 >
                     <div className="text-white text-center">
@@ -422,14 +507,93 @@ const JumpGame = () => {
 
             {/* Player */}
             <motion.div
-                className="absolute w-8 h-8 bg-blue-500"
-                style={{ left: '80px' }}
-                animate={{ bottom: `${playerBottom}px` }}
-                transition={{ 
-                    duration: 0.01,
-                    ease: playerBottom > 16 ? "easeOut" : "easeIn"
+                className="absolute w-20 h-16"
+                style={{ 
+                    left: '80px',
+                    transformOrigin: 'bottom center' // Stretch from the bottom
                 }}
-            />
+                animate={{ 
+                    bottom: `${playerBottom}px`,
+                    scaleY: animationStates.bodyStretch,
+                    scaleX: 1 / Math.sqrt(animationStates.bodyStretch) // Compensate width
+                }}
+                transition={{ 
+                    bottom: {
+                        duration: 0.01,
+                        ease: playerBottom > 16 ? "easeOut" : "easeIn"
+                    },
+                    scaleY: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 15
+                    },
+                    scaleX: {
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 15
+                    }
+                }}
+            >
+                {/* Bag - Bottom layer */}
+                <PlayerSprite 
+                    part="bag" 
+                    variant={playerCustomization.bag} 
+                    zIndex={0} 
+                />
+                
+                {/* Body - Base layer */}
+                <PlayerSprite 
+                    part="body" 
+                    variant="default" 
+                    zIndex={10} 
+                />
+                
+                {/* Eyes - Animated */}
+                <PlayerSprite 
+                    part="eyes" 
+                    variant={animationStates.eyesClosed ? 'closed' : 'open'} 
+                    zIndex={20} 
+                />
+                
+                {/* Wear - Customizable */}
+                <PlayerSprite 
+                    part="wear" 
+                    variant={playerCustomization.wear} 
+                    zIndex={20} 
+                />
+                
+                {/* Hat - Two parts (top and body) */}
+                {playerCustomization.hat !== 'none' && (
+                    <div className='w-full h-full absolute' style={{ zIndex: 30 }}>
+                        <PlayerSprite 
+                            part="hat" 
+                            variant={`${playerCustomization.hat}-top`} 
+                            zIndex={10} 
+                        />
+                        <PlayerSprite 
+                            part="hat" 
+                            variant={`${playerCustomization.hat}-body`} 
+                            zIndex={0} 
+                        />
+                    </div>
+                )}
+                
+                {/* Shoes - Animated left and right */}
+                <div className='w-full h-full absolute'>
+                    <PlayerSprite 
+                        part="shoes" 
+                        variant={`${playerCustomization.shoes}-left`}
+                        state={animationStates.leftShoe}
+                        zIndex={0} 
+                    />
+                    <PlayerSprite 
+                        part="shoes" 
+                        variant={`${playerCustomization.shoes}-right`}
+                        state={animationStates.rightShoe}
+                        zIndex={30} 
+                    />
+                </div>
+            </motion.div>
 
             {/* Score Display */}
             <div className="absolute top-2 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
