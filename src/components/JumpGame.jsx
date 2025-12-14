@@ -20,21 +20,148 @@ const Particle = ({ scrollOffset, initialX, cycleDistance, topPosition, size, op
 
 // Obstacle Component
 const Obstacle = ({ position, height, width }) => {
+    // Map width to sprite size
+    const getSizeVariant = (width) => {
+        switch(width) {
+            case 32: return 's';
+            case 48: return 'm';
+            case 64: return 'l';
+            case 80: return 'xl';
+            case 96: return '2xl';
+            default: return 's';
+        }
+    };
+
     return (
-        <div 
-            className="absolute bg-red-600"
+        <img
+            src={`/assets/game/main/obstacle-${getSizeVariant(width)}.png`}
+            className="absolute"
             style={{ 
                 left: `${position}px`,
                 bottom: '16px',
-                width: `${width}px`, // Now uses dynamic width
+                width: `${width}px`,
                 height: `${height}px`,
+                imageRendering: 'pixelated'
             }}
+            alt={`obstacle-${getSizeVariant(width)}`}
         />
     );
 };
 
+// Ground Component
+const Ground = ({ score, gameStarted, gameOver }) => {
+    const [currentVariant, setCurrentVariant] = useState(1);
+    const [previousVariant, setPreviousVariant] = useState(null);
+    const [groundScrollOffset, setGroundScrollOffset] = useState(0);
+    const groundAnimationRef = useRef(null);
+
+    const BASE_GROUND_SPEED = 2.6;
+
+    // Change ground sprite every 200 score, cycle through 6 variants
+    const getGroundVariant = () => {
+        const segment = Math.floor(score / 200) % 6;
+        return segment + 1;
+    };
+
+    const targetVariant = getGroundVariant();
+
+    // Handle transitions when variant changes
+    useEffect(() => {
+        if (targetVariant !== currentVariant) {
+            setPreviousVariant(currentVariant);
+            
+            // Wait for fade animation, then clear previous
+            setTimeout(() => {
+                setPreviousVariant(null);
+            }, 2000);
+            
+            setCurrentVariant(targetVariant);
+        }
+    }, [targetVariant]);
+
+    // Ground scrolling animation
+    useEffect(() => {
+        if (groundAnimationRef.current) {
+            cancelAnimationFrame(groundAnimationRef.current);
+        }
+
+        if (!gameStarted || gameOver) {
+            setGroundScrollOffset(0);
+            return;
+        }
+
+        const animate = () => {
+            setGroundScrollOffset(prev => {
+                const speedMultiplier = 1 + Math.floor(score / 100) * 0.1;
+                const currentSpeed = BASE_GROUND_SPEED * speedMultiplier;
+                return prev + currentSpeed;
+            });
+            groundAnimationRef.current = requestAnimationFrame(animate);
+        };
+
+        groundAnimationRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            if (groundAnimationRef.current) {
+                cancelAnimationFrame(groundAnimationRef.current);
+            }
+        };
+    }, [gameStarted, gameOver, score]);
+
+    // Create ground tiles
+    const groundTiles = [];
+    const tileWidth = 200;
+    const numTiles = 6;
+
+    for (let i = 0; i < numTiles; i++) {
+        const xPosition = (i * tileWidth) - (groundScrollOffset % tileWidth);
+        
+        // Previous tiles (fading out)
+        if (previousVariant !== null) {
+            groundTiles.push(
+                <motion.img
+                    key={`prev-${previousVariant}-${i}`}
+                    src={`/assets/game/main/ground-${previousVariant}.png`}
+                    className="absolute bottom-0 h-4"
+                    style={{
+                        left: `${xPosition}px`,
+                        width: `${tileWidth}px`,
+                        height: '16px',
+                        imageRendering: 'pixelated'
+                    }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ duration: 2, ease: "easeInOut" }}
+                    alt={`ground-${previousVariant}`}
+                />
+            );
+        }
+        
+        // Current tiles (fading in)
+        groundTiles.push(
+            <motion.img
+                key={`current-${currentVariant}-${i}`}
+                src={`/assets/game/main/ground-${currentVariant}.png`}
+                className="absolute bottom-0 h-4"
+                style={{
+                    left: `${xPosition}px`,
+                    width: `${tileWidth}px`,
+                    height: '16px',
+                    imageRendering: 'pixelated'
+                }}
+                initial={{ opacity: previousVariant !== null ? 0 : 1 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+                alt={`ground-${currentVariant}`}
+            />
+        );
+    }
+
+    return <>{groundTiles}</>;
+};
+
 // Player Sprite Component
-const PlayerSprite = ({ part, variant, state, zIndex }) => {
+const PlayerSprite = ({ part, variant, state, zIndex, offsetY = 0 }) => {
     if (variant === 'none') return null;
     
     const filename = state 
@@ -42,10 +169,19 @@ const PlayerSprite = ({ part, variant, state, zIndex }) => {
         : `${part}-${variant}.png`;
     
     return (
-        <img 
-            src={`/assets/game/hero/${filename}`}
-            className="w-full h-full absolute top-1"
-            style={{ zIndex }}
+        <motion.img 
+            src={`/assets/game/main/${filename}`}
+            className="w-full h-full absolute"
+            style={{ 
+                zIndex,
+                imageRendering: 'pixelated'
+            }}
+            animate={{ y: offsetY }}
+            transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20
+            }}
             alt={filename}
         />
     );
@@ -68,22 +204,6 @@ const JumpGame = () => {
     const [obstacles, setObstacles] = useState([]); // Array of obstacles
     const [gameOver, setGameOver] = useState(false); // Game over state
     const [gameStarted, setGameStarted] = useState(false); // Game started state
-    
-    // Animation states - all in one object
-    const [animationStates, setAnimationStates] = useState({
-        eyesClosed: false,
-        leftShoe: 'idle',   // 'idle', 'ready', 'step'
-        rightShoe: 'idle',  // 'idle', 'ready', 'step'
-        bodyStretch: 1    // 1 = normal, >1 = stretch, <1 = squash
-    });
-
-    // Player customization
-    const [playerCustomization, setPlayerCustomization] = useState({
-        hat: 'default',
-        wear: 'default',
-        shoes: 'default',
-        bag: 'default',
-    });
 
     const [highScore, setHighScore] = useState(() => {
         try {
@@ -93,6 +213,13 @@ const JumpGame = () => {
             console.error('Failed to load high score:', error);
             return 0;
         }
+    });
+
+    const [playerAnimation, setPlayerAnimation] = useState({
+        status: 1,
+        x: 1,
+        y: 1,
+        eye: 0,
     });
 
     // References
@@ -186,14 +313,14 @@ const JumpGame = () => {
     }, []);
 
     // Collision Listener
-    /* useEffect(() => {
+    useEffect(() => {
         if (gameOver || !gameStarted) return;
         
         const checkCollision = () => {
-            const playerLeft = 75;
-            const playerRight = playerLeft + 75;
+            const playerLeft = 80;
+            const playerRight = playerLeft + 32;
             const playerBottomPos = playerBottom;
-            const playerTopPos = playerBottom + 64;
+            const playerTopPos = playerBottom + 32;
             
             // Add extra detection margins for more aggressive collision
             const horizontalMargin = 8; // Horizontal detection range
@@ -228,6 +355,7 @@ const JumpGame = () => {
                     if (jumpIntervalRef.current) {
                         clearInterval(jumpIntervalRef.current);
                     }
+                    setPlayerAnimation(prev => ({ ...prev, status: 0 })); // Set to dead
                     setGameOver(true);
                     setPlayerBottom(playerBottom);
                     return;
@@ -239,6 +367,7 @@ const JumpGame = () => {
                     if (jumpIntervalRef.current) {
                         clearInterval(jumpIntervalRef.current);
                     }
+                    setPlayerAnimation(prev => ({ ...prev, status: 0 })); // Set to dead
                     setGameOver(true);
                     setPlayerBottom(playerBottom);
                     return;
@@ -249,7 +378,7 @@ const JumpGame = () => {
         // Run at same rate as physics (60fps) for immediate detection
         const collisionInterval = setInterval(checkCollision, 16);
         return () => clearInterval(collisionInterval);
-    }, [obstacles, playerBottom, gameOver, gameStarted]); */
+    }, [obstacles, playerBottom, gameOver, gameStarted]);
 
     // Jump Cycle Handler
     useEffect(() => {
@@ -261,42 +390,58 @@ const JumpGame = () => {
                 let currentHeight = GROUND_Y;
                 let velocity = VELOCITY; // Start with upward velocity
                 let peakReached = false; // Track if peak has been reached
+
+                // Squash before jump
+                setPlayerAnimation(prev => ({ ...prev, x: 1.2, y: 0.9, eye: -10 }));
                 
-                // Physics Loop (Runs every 16ms ~60fps)
-                const jumpInterval = setInterval(() => {
-                    velocity += GRAVITY; // Gravity affects velocity (Reduce upward speed, then increase downward speed)
-                    currentHeight -= velocity; // Apply velocity to height (Upward is negative)
-                    
-                    // Detect peak and add hang time
-                    if (!peakReached && velocity >= 0) {
-                        peakReached = true;
-                        clearInterval(jumpInterval);
+                setTimeout(() => {
+                    // Stretch during ascent
+                    setPlayerAnimation(prev => ({ ...prev, x: 0.9, y: 1.2, eye: -10 }));
+                    // Physics Loop (Runs every 16ms ~60fps)
+                    const jumpInterval = setInterval(() => {
+                        velocity += GRAVITY; // Gravity affects velocity (Reduce upward speed, then increase downward speed)
+                        currentHeight -= velocity; // Apply velocity to height (Upward is negative)
                         
-                        // Pause at peak for 150ms
-                        setTimeout(() => {
-                            let fallVelocity = 0;
-                            let fallHeight = currentHeight;
+                        // Detect peak and add hang time
+                        if (!peakReached && velocity >= 0) {
+                            peakReached = true;
+                            clearInterval(jumpInterval);
                             
-                            const fallInterval = setInterval(() => {
-                                fallVelocity += GRAVITY;
-                                fallHeight -= fallVelocity;
+                            // Pause at peak for 150ms
+                            setTimeout(() => {
+                                let fallVelocity = 0;
+                                let fallHeight = currentHeight;
+
+                                // Stretch during fall
+                                setPlayerAnimation(prev => ({ ...prev, x: 0.9, y: 1.2 }));
                                 
-                                if (fallHeight <= GROUND_Y) {
-                                    fallHeight = GROUND_Y;
-                                    clearInterval(fallInterval);
-                                }
-                                
-                                setPlayerBottom(Math.round(fallHeight));
-                            }, 16);
-                            jumpIntervalRef.current = jumpInterval;
-                        }, 100);
+                                const fallInterval = setInterval(() => {
+                                    fallVelocity += GRAVITY;
+                                    fallHeight -= fallVelocity;
+                                    
+                                    if (fallHeight <= GROUND_Y) {
+                                        fallHeight = GROUND_Y;
+                                        clearInterval(fallInterval);
+
+                                        // Squash on landing
+                                        setPlayerAnimation(prev => ({ ...prev, x: 1.2, y: 0.9, eye: 10 }));
+                                        setTimeout(() => {
+                                            setPlayerAnimation(prev => ({ ...prev, x: 1, y: 1, eye: 0 }));
+                                        }, 100);
+                                    }
+                                    
+                                    setPlayerBottom(Math.round(fallHeight));
+                                }, 16);
+                                jumpIntervalRef.current = jumpInterval;
+                            }, 100);
+                            
+                            return;
+                        }
                         
-                        return;
-                    }
-                    
-                    setPlayerBottom(Math.round(currentHeight));
-                }, 16);
-                jumpIntervalRef.current = jumpInterval;
+                        setPlayerBottom(Math.round(currentHeight));
+                    }, 16);
+                    jumpIntervalRef.current = jumpInterval;
+                }, 50); // Brief squash before launching
             }
         };
 
@@ -368,57 +513,6 @@ const JumpGame = () => {
         return () => clearInterval(moveInterval);
     }, [gameSpeed, gameOver, gameStarted]);
 
-    // Eye blink animation
-    useEffect(() => {
-        const blinkInterval = setInterval(() => {
-            setAnimationStates(prev => ({ ...prev, eyesClosed: true }));
-            setTimeout(() => {
-                setAnimationStates(prev => ({ ...prev, eyesClosed: false }));
-            }, 150); // Blink duration (eyes closed for 150ms)
-        }, Math.random() * 2000 + 3000); // Random between 3-5 seconds
-
-        return () => clearInterval(blinkInterval);
-    }, []);
-
-    // Running animation
-    useEffect(() => {
-        if (gameOver || !gameStarted) return;
-
-        // Define the cycle for each shoe
-        const rightShoeCycle = ['step', 'ready'];
-        const leftShoeCycle = ['ready', 'step'];
-        
-        let cycleIndex = 0;
-        
-        const runningInterval = setInterval(() => {
-            setAnimationStates(prev => ({
-                ...prev,
-                rightShoe: rightShoeCycle[cycleIndex],
-                leftShoe: leftShoeCycle[cycleIndex],
-                bodyStretch: 1.1
-            }));
-            
-            // Return to normal after brief stretch
-            setTimeout(() => {
-                setAnimationStates(prev => ({
-                    ...prev,
-                    bodyStretch: 0.95 // Slight squash
-                }));
-                
-                setTimeout(() => {
-                    setAnimationStates(prev => ({
-                        ...prev,
-                        bodyStretch: 1 // Back to normal
-                    }));
-                }, 100);
-            }, 100);
-            
-            cycleIndex = (cycleIndex + 1) % 2;
-        }, 500);
-
-        return () => clearInterval(runningInterval);
-    }, [gameOver, gameStarted]);
-
     // Restart Game Function
     const restartGame = () => {
         // Update high score if current score is higher
@@ -438,6 +532,7 @@ const JumpGame = () => {
         lastSpawnTime.current = Date.now();
         setGameOver(false);
         setGameStarted(true);
+        setPlayerAnimation({ status: 1, x: 1, y: 1, eye: 0 });
     };
 
     // Start Game Function
@@ -445,8 +540,44 @@ const JumpGame = () => {
         setGameStarted(true);
     };
 
+    // Body variant based on if player is beating high score
+    const getBodyVariant = () => {
+        if (playerAnimation.status === 0) return 'death';
+        if (score > highScore) return 'kintama'; // Beating high score!
+        return 'default';
+    };
+
+    const getBackgroundColors = () => {
+        const variant = Math.floor(score / 200) % 6 + 1;
+        
+        switch(variant) {
+            case 1: return { from: '#c26e1b', to: '#FBBF24' }; // Sunset
+            case 2: return { from: '#164E63', to: '#0891B2' }; // Street
+            case 3: return { from: '#60A5FA', to: '#FDE047' }; // Sky
+            case 4: return { from: '#93C5FD', to: '#FFFFFF' }; // Snow
+            case 5: return { from: '#1E1B4B', to: '#581C87' }; // Night
+            case 6: return { from: '#F87171', to: '#FB923C' }; // Sunrise
+            default: return { from: '#E9D5FF', to: '#C4B5FD' };
+        }
+    };
+
+    const colors = getBackgroundColors();
+
     return (
-        <div ref={gameContainerRef} className="relative w-full h-full bg-gradient-to-l from-lavender/30 to-royal/30 overflow-hidden rounded-2xl">
+        <motion.div
+            ref={gameContainerRef} 
+            className="relative w-full h-full overflow-hidden rounded-2xl"
+            style={{
+                background: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`
+            }}
+            animate={{
+                background: `linear-gradient(to bottom, ${colors.from}, ${colors.to})`
+            }}
+            transition={{
+                duration: 2,
+                ease: "easeInOut"
+            }}
+        >
             {/* Start Game */}
             {!gameStarted && (
                 <div 
@@ -463,7 +594,7 @@ const JumpGame = () => {
             {/* Game Over */}
             {gameOver && (
                 <div 
-                    className="absolute inset-0 bg-black/90 z-40 flex items-center justify-center cursor-pointer"
+                    className="absolute inset-0 bg-black/80 z-40 flex items-center justify-center cursor-pointer"
                     onClick={restartGame}
                 >
                     <div className="text-white text-center">
@@ -480,7 +611,11 @@ const JumpGame = () => {
             )}
 
             {/* Ground */}
-            <div className="absolute bottom-0 w-full h-4 bg-gray-600"/>
+            <Ground
+                score={score} 
+                gameStarted={gameStarted}
+                gameOver={gameOver}
+            />
             
             {/* Background Particles */}
             {particles.map((particle, index) => (
@@ -507,116 +642,61 @@ const JumpGame = () => {
 
             {/* Player */}
             <motion.div
-                className="absolute w-20 h-16"
+                className="absolute w-10 h-10"
                 style={{ 
                     left: '80px',
                     transformOrigin: 'bottom center' // Stretch from the bottom
                 }}
-                animate={{ 
+                animate={{
                     bottom: `${playerBottom}px`,
-                    scaleY: animationStates.bodyStretch,
-                    scaleX: 1 / Math.sqrt(animationStates.bodyStretch) // Compensate width
+                    scaleX: playerAnimation.x,
+                    scaleY: playerAnimation.y
                 }}
-                transition={{ 
-                    bottom: {
-                        duration: 0.01,
-                        ease: playerBottom > 16 ? "easeOut" : "easeIn"
-                    },
-                    scaleY: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 15
-                    },
-                    scaleX: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 15
-                    }
+                transition={{
+                    duration: 0.01,
+                    ease: playerBottom > 16 ? "easeOut" : "easeIn"
                 }}
             >
-                {/* Bag - Bottom layer */}
                 <PlayerSprite 
-                    part="bag" 
-                    variant={playerCustomization.bag} 
-                    zIndex={0} 
+                    part="body-color"
+                    variant={getBodyVariant()}
+                    zIndex={1}
                 />
-                
-                {/* Body - Base layer */}
-                <PlayerSprite 
-                    part="body" 
-                    variant="default" 
-                    zIndex={10} 
+                <PlayerSprite
+                    part="body-overlay"
+                    variant={getBodyVariant()}
+                    zIndex={2}
                 />
-                
-                {/* Eyes - Animated */}
-                <PlayerSprite 
-                    part="eyes" 
-                    variant={animationStates.eyesClosed ? 'closed' : 'open'} 
-                    zIndex={20} 
+                <PlayerSprite
+                    part="eyes"
+                    variant={playerAnimation.status === 1 ? "default" : "death"}
+                    zIndex={3}
+                    offsetY={playerAnimation.eye}
                 />
-                
-                {/* Wear - Customizable */}
-                <PlayerSprite 
-                    part="wear" 
-                    variant={playerCustomization.wear} 
-                    zIndex={20} 
-                />
-                
-                {/* Hat - Two parts (top and body) */}
-                {playerCustomization.hat !== 'none' && (
-                    <div className='w-full h-full absolute' style={{ zIndex: 30 }}>
-                        <PlayerSprite 
-                            part="hat" 
-                            variant={`${playerCustomization.hat}-top`} 
-                            zIndex={10} 
-                        />
-                        <PlayerSprite 
-                            part="hat" 
-                            variant={`${playerCustomization.hat}-body`} 
-                            zIndex={0} 
-                        />
-                    </div>
-                )}
-                
-                {/* Shoes - Animated left and right */}
-                <div className='w-full h-full absolute'>
-                    <PlayerSprite 
-                        part="shoes" 
-                        variant={`${playerCustomization.shoes}-left`}
-                        state={animationStates.leftShoe}
-                        zIndex={0} 
-                    />
-                    <PlayerSprite 
-                        part="shoes" 
-                        variant={`${playerCustomization.shoes}-right`}
-                        state={animationStates.rightShoe}
-                        zIndex={30} 
-                    />
-                </div>
             </motion.div>
 
             {/* Score Display */}
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+            <div className="absolute top-2 right-4 flex flex-col items-center">
                 <h3 className="text-heading">{score}</h3>
                 <p className="text-white text-sm font-mono">HI {highScore}</p>
             </div>
 
             {/* Speed Indicator */}
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono opacity-50">
+            {/* <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-white text-xs font-mono opacity-50">
                 Speed: {gameSpeed.toFixed(1)}x
                 Y: {playerBottom}
-            </div>
+            </div> */}
 
             {/* Dynamic Text Overlay */}
-            <div className="absolute top-4 left-4 text-white text-sm font-mono">
+            {/* <div className="absolute top-4 left-4 text-white text-sm font-mono">
                 {!isActive ? 'Jumping' : 'Release'}
-            </div>
+            </div> */}
 
             {/* Instructions */}
-            <div className="absolute top-4 right-4 text-white text-xs font-mono opacity-70">
-                Press LEFT CLICK to Jump
+            <div className="absolute top-4 left-4 text-white text-xs font-mono opacity-70">
+                {'Press LEFT CLICK to Jump'}
             </div>
-        </div>
+        </motion.div>
     );
 };
 
