@@ -35,18 +35,14 @@ const Contact = () => {
         try {
             console.log("Form submitted:", formData);
             await emailjs.send(
-                //service_kg76rkq
-                "service_1itrgr7",
-                "template_u4fw94d",
+                import.meta.env.VITE_EMAILJS_SERVICE_ID,
+                import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
                 {
-                    from_name: formData.name, 
-                    to_name: "Azel", 
-                    from_email: 
-                    formData.email, 
-                    to_email: "azelsumanting@gmail.com",
+                    from_name: formData.name,
+                    from_email: formData.email,
                     message: formData.message
                 },
-                "K6lqq28eZauJu4MLU"
+                import.meta.env.VITE_EMAILJS_PUBLIC_KEY
             );
             setIsLoading(false);
             //alert("Thank you. I will get back to you as soon as possible.");
